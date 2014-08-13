@@ -1,7 +1,7 @@
 ## preprocess.py
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
-## Time-stamp: <yangfeng 08/10/2014 15:24:14>
+## Time-stamp: <yangfeng 08/12/2014 22:33:07>
 
 import string
 from huffman import WordCode, HuffmanCode
@@ -13,7 +13,7 @@ class Preprocess(object):
         self.thresh = 1.0
         self.word_freq = {}
 
-    def wordfreq(self, fname):
+    def getwordfreq(self, fname):
         """ Create word freqency dictionary
         """
         word_count = defaultdict(int)
@@ -32,20 +32,29 @@ class Preprocess(object):
         # Second pass, normalize the probability
         for (word, count) in self.word_freq.iteritems():
             self.word_freq[word] /= total_count
+
+    def generatesample(self):
+        """ Generate sample for every word
+        """
+        pass
         
-    
     def clean(self, fname_in, fname_out, fname_code):
         """ Create a huffman codebook and clean the datafile
 
-        :INPUT fname_in: raw data file
-        :INPUT fname_out: cleaned data file
-        :INPUT fname_code: codebook file
+        :type fname_in: string
+        :param fname_in: input file name
+
+        :type fname_out: string
+        :param fname_out: output file name
+
+        :type fname_code: string
+        :param fname_code: huffman code file name
         """
         # Word frequency
-        self.wordfreq(fname_in)
+        self.getwordfreq(fname_in)
         # Coding and save code
         coder = HuffmanCode()
-        codebook = coder.coding(self.wordfreq)
+        codebook = coder.coding(self.word_freq)
         coder.save(fname_code)
         # Call __clean
         self.__clean(fname_in, fname_out, codebook)
@@ -61,6 +70,15 @@ class Preprocess(object):
 
     def __clean(self, fname_in, fname_out, codebook):
         """ Clean the datafile with a given codebook
+
+        :type fname_in: string
+        :param fname_in: input file name
+
+        :type fname_out: string
+        :param fname_out: output file name
+
+        :type codebook: dictionary
+        :param codebook: code book with word as key, WordCode as value
         """
         # Clean file
         fin = open(fname_in, "r")
@@ -75,9 +93,7 @@ class Preprocess(object):
                         wc = codebook[word]
                         ids.append(wc.index)
                     except KeyError:
-                        word = "RAREWORD"
-                        wc = codebook[word]
-                        ids.append(wc.index)
+                        pass
             ids = map(str, ids)
             line_ids = str(sent_counter) + "\t" + (" ".join(ids))
             fout.write(line_ids + "\n")
