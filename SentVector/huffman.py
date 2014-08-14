@@ -1,7 +1,7 @@
 ## huffman.py
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
-## Time-stamp: <yangfeng 08/13/2014 22:12:51>
+## Time-stamp: <yangfeng 08/14/2014 13:11:38>
 
 from huffmancoding import *
 from datastructure import WordCode
@@ -14,7 +14,10 @@ class HuffmanCode(object):
         self.max_length = 0
 
     def load(self, fname):
-        """
+        """ Load codebook, where word as key
+
+        :type fname: string
+        :param fname: codebook file name
         """
         fin = open(fname, 'r')
         for line in fin:
@@ -22,6 +25,21 @@ class HuffmanCode(object):
             wc = WordCode(int(items[0]), items[1], items[2],
                           float(items[3]))
             self.code[items[1]] = wc
+        fin.close()
+        return self.code
+
+    def load_idxkey(self, fname):
+        """ Load codebook, where index as key
+
+        :type fname: string
+        :param fname: codebook file name
+        """
+        fin = open(fname, 'r')
+        for line in fin:
+            items = line.strip().split("\t")
+            wc = WordCode(int(items[0]), items[1], items[2],
+                          float(items[3]))
+            self.code[int(items[0])] = wc
         fin.close()
         return self.code
 

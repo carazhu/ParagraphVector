@@ -1,18 +1,32 @@
 ## preprocess.py
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
-## Time-stamp: <yangfeng 08/13/2014 22:08:50>
+## Time-stamp: <yangfeng 08/14/2014 12:18:57>
 
 import string
 from huffman import HuffmanCode
 from datastructure import WordCode
 from collections import defaultdict
 
+EXCLUDE = set(string.punctuation)
+
+def wordprocess(word):
+    clean_word = ''.join(ch for ch in word if ch not in EXCLUDE)
+    if len(clean_word) == 0:
+        return None
+    else:
+        try:
+            num = float(clean_word)
+            return None
+        except ValueError:
+            return word
+
+
 class Preprocess(object):
     def __init__(self, thresh=1.0):
         """ Initialize the parameters related to pre-processing
         """
-        self.thresh = 1.0
+        self.thresh = thresh
         self.word_freq = {}
 
     def getwordfreq(self, fname):
@@ -23,12 +37,14 @@ class Preprocess(object):
         for line in fin:
             words = line.strip().split()
             for word in words:
-                word_count[word] += 1
+                word = wordprocess(word)
+                if word is not None:
+                    word_count[word] += 1
         # First pass, remove low-freq words and
         # compute the overall counts
         total_count = 0.0
         for (word, count) in word_count.iteritems():
-            if (count >= self.thresh) and (word not in string.punctuation):
+            if (count >= self.thresh):
                 self.word_freq[word] = count
                 total_count += count
         # Second pass, normalize the probability
@@ -93,12 +109,11 @@ class Preprocess(object):
             words = line.strip().split()
             ids = []
             for word in words:
-                if (word not in string.punctuation):
-                    try:
-                        wc = codebook[word]
-                        ids.append(wc.index)
-                    except KeyError:
-                        pass
+                try:
+                    wc = codebook[word]
+                    ids.append(wc.index)
+                except KeyError:
+                    pass
             ids = map(str, ids)
             line_ids = str(sent_counter) + "\t" + (" ".join(ids))
             fout.write(line_ids + "\n")
@@ -112,9 +127,9 @@ class Preprocess(object):
 
 
 def main():
-    pp = Preprocess(thresh=1.0)
+    pp = Preprocess(thresh=5.0)
     fname_in = "../Debtates/debtates-sent.txt"
-    fname_out = "../Debtates/debtates-wordindex.txt"
+    fname_out = "../Debtates/debtates-word-index.txt"
     fname_code = "../Debtates/codebook.txt"
     pp.clean(fname_in, fname_out, fname_code)
 

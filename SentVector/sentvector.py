@@ -1,13 +1,15 @@
 ## sentvector.py
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
-## Time-stamp: <yangfeng 08/13/2014 20:56:15>
+## Time-stamp: <yangfeng 08/14/2014 18:50:54>
 
 import theano
 import theano.tensor as T
 import numpy
 from huffman import *
 from datastructure import WordCode, Instance
+
+rng = numpy.random.RandomState(1234)
 
 class SentVector(object):
     def __init__(self, n_word, n_sent, n_feat, n_dim):
@@ -29,22 +31,26 @@ class SentVector(object):
         :type n_dim: int
         :param n_dim: number of latent dimension
         """
-        self.Word = theano.shared(value=numpy.zeros((n_dim, n_word),
-                                                    dtype=theano.config.floatX),
-                                                    name='Word')
-        self.Sent = theano.shared(value=numpy.zeros((n_dim, n_sent),
-                                                    dtype=theano.config.floatX),
-                                                    name='Sent')
-        self.Feat = theano.shared(value=numpy.zeros((n_dim, n_feat+1),
-                                                    dtype=theano.config.floatX),
-                                                    name='Feat')
-        self.W = theano.shared(value=numpy.zeros((n_dim, n_dim),
-                                                 dtype=theano.config.floatX),
-                                                 name='W')
+        Word_values = W_values = numpy.asarray(rng.uniform(low=0, high=1.0,
+                size=(n_dim, n_dim)), dtype=theano.config.floatX)
+        self.Word = theano.shared(value=Word_values, name='Word')
+        Sent_values = W_values = numpy.asarray(rng.uniform(low=0, high=1.0,
+                size=(n_dim, n_dim)), dtype=theano.config.floatX)
+        self.Sent = theano.shared(value=Sent_values, name='Sent')
+        Feat_values = W_values = numpy.asarray(rng.uniform(low=0, high=1.0,
+                size=(n_dim, n_dim)), dtype=theano.config.floatX)
+        self.Feat = theano.shared(value=Feat_values, name='Feat')
+        W_values = numpy.asarray(rng.uniform(
+            low=-numpy.sqrt(6. / (n_dim + n_dim)),
+            high=-numpy.sqrt(6. / (n_dim + n_dim)),
+            size=(n_dim, n_dim)), dtype=theano.config.floatX)
+        self.W = theano.shared(value=W_values * 4, name='W')
         self.b = theano.shared(value=numpy.zeros((n_feat+1,),
                                                  dtype=theano.config.floatX),
                                                  name='b')
         self.params = [self.Word, self.Sent, self.Feat, self.W, self.b]
+        self.n_dim = n_dim
+        self.nWords = n_word
 
 
     def hierarchical_softmax(self, input):
@@ -56,20 +62,26 @@ class SentVector(object):
         """
         word_idx = input.windex
         sent_idx = input.sindex
-        context_list = input.clist
+        cont_list = input.clist
         code = input.code
-        # 
-        nWords = self.Word.shape[1]
+        #
+        nWords = self.nWords
         nCode = len(code)
+        print 'nWords = {}, nCode = {}'.format(nWords, nCode)
         # Average context words and sentence vector
         r_hat = numpy.zeros((self.n_dim,))
+        # r_hat = T.vector(name="r_hat",
+        #                  dtype=theano.config.floatX)
         for idx in cont_list:
             r_hat += self.Word[:,idx]
+        r_hat = r_hat / len(cont_list) # Average
+        # Add sentence vector
         r_hat += self.Sent[:,sent_idx]
-        r_hat = r_hat / (len(cont_list) + 1) # Average
         # Word vector (row vector)
         word_vec = self.Word[:,word_idx].transpose()
-        logprob = 0.0
+        logprob = T.scalar(name="logprob",
+                            dtype=theano.config.floatX)
+        print "logprob = {}".format(logprob)
         for idx in range(nCode):
             # Along the code to compute hierarchical softmax
             if idx == 0:
@@ -84,12 +96,12 @@ class SentVector(object):
             elif label == '0':
                 prob_idx = 1 - prob_idx_label_1
             logprob += T.log(prob_idx)
-        return T.exp(logprob)
+        return logprob
 
-    def negative_log_likelihood(self, input):
+    def negative_log_likelihood(self, index):
         """ Return the mean of the hierarchical softmax for a given word
         """
-        return -T.log(self.hierarchical_softmax(input))
+        return -self.hierarchical_softmax(input)
 
     def save_model(self, fname):
         """ Save the shared variables into files
