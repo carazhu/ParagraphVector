@@ -1,16 +1,21 @@
 ## sentvector.py
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
-## Time-stamp: <yangfeng 08/12/2014 22:19:42>
+## Time-stamp: <yangfeng 08/13/2014 18:04:14>
 
 import theano
 import theano.tensor as T
 import numpy
+from huffman import *
+from datastructure import WordCode, Instance
 
 class SentVector(object):
     def __init__(self, n_word, n_sent, n_feat, n_dim):
         """ Initialize the parameters of the SentVector model
 
+        :type input: one instance of WordCode
+        :param input: 
+        
         :type n_word: int
         :param n_word: number of words
 
@@ -41,22 +46,19 @@ class SentVector(object):
                                                  name='b')
         self.params = [self.Word, self.Sent, self.Feat, self.W, self.b]
 
-    def hierarchical_softmax(self, word_idx, sent_idx, cont_list, code):
+
+    def hierarchical_softmax(self, input):
         """ Compute the hierarchical softmax for a given word
         Simple average, without involving any parameter - YJ
 
-        :type word_idx: int
-        :param word_idx: word index
-
-        :type sent_idx: int
-        :param sent_idx: sentence index
-
-        :type context_list: int list
-        :param context_list: a list of context indices for the given word
-
-        :type code: binary string
-        :param code: a list of '1' and '0' string
+        :type input: Instance
+        :param input: an instance of class Instance
         """
+        word_idx = input.windex
+        sent_idx = input.sindex
+        context_list = input.clist
+        code = input.code
+        # 
         nWords = self.Word.shape[1]
         nCode = len(code)
         # Average context words and sentence vector
@@ -84,10 +86,10 @@ class SentVector(object):
             logprob += T.log(prob_idx)
         return T.exp(logprob)
 
-    def negative_log_likelihood(self, word_idx, sent_idx, cont_list, code):
+    def negative_log_likelihood(self, input):
         """ Return the mean of the hierarchical softmax for a given word
         """
-        return -T.log(self.hierarchical_softmax(word_idx, sent_idx, cont_list, code))
+        return -T.log(self.hierarchical_softmax(input))
 
     def save_model(self, fname):
         """ Save the shared variables into files

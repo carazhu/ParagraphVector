@@ -1,16 +1,10 @@
 ## huffman.py
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
-## Time-stamp: <yangfeng 08/12/2014 22:38:24>
+## Time-stamp: <yangfeng 08/13/2014 12:23:33>
 
 from huffmancoding import *
-
-class WordCode(object):
-    def __init__(self, index, word, code, freq):
-        self.word = word
-        self.index = index
-        self.code = code
-        self.freq = freq
+from datastructure import WordCode
 
 class HuffmanCode(object):
     def __init__(self, anything_here):

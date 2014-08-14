@@ -1,10 +1,11 @@
 ## preprocess.py
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
-## Time-stamp: <yangfeng 08/12/2014 22:33:07>
+## Time-stamp: <yangfeng 08/13/2014 12:24:30>
 
 import string
-from huffman import WordCode, HuffmanCode
+from huffman import HuffmanCode
+from datastructure import WordCode
 
 class Preprocess(object):
     def __init__(self, thresh=1.0):
