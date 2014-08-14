@@ -1,13 +1,13 @@
 ## huffman.py
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
-## Time-stamp: <yangfeng 08/13/2014 12:23:33>
+## Time-stamp: <yangfeng 08/13/2014 22:12:51>
 
 from huffmancoding import *
 from datastructure import WordCode
 
 class HuffmanCode(object):
-    def __init__(self, anything_here):
+    def __init__(self):
         """
         """
         self.code = {}
@@ -31,9 +31,10 @@ class HuffmanCode(object):
         Data format
         word \t code \t word-freq
         """
-        fout = open(fname, 'r')
+        fout = open(fname, 'w')
         for (key, wc) in self.code.iteritems():
-            fout.write(str(wc.index) + "\t" + wc.word + "\t" + wc.code + "\t" + str(wc.freq) + "\n")
+            fout.write(str(wc.index) + "\t" + wc.word + "\t"
+                       + wc.code + "\t" + str(wc.freq) + "\n")
         fout.close()
 
     def coding(self, word_freq):
@@ -49,7 +50,9 @@ class HuffmanCode(object):
             prob_list.append(prob)
         code_list = huffman(prob_list)
         for (idx, code) in enumerate(code_list):
-            wc = WordCode(idx, word_list[idx], code, freq_list[idx])
+            word = word_list[idx]
+            prob = prob_list[idx]
+            wc = WordCode(idx, word, code, prob)
             if self.max_length < len(code):
                 self.max_length = len(code)
             self.code[word] = wc

@@ -1,11 +1,12 @@
 ## preprocess.py
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
-## Time-stamp: <yangfeng 08/13/2014 12:24:30>
+## Time-stamp: <yangfeng 08/13/2014 22:08:50>
 
 import string
 from huffman import HuffmanCode
 from datastructure import WordCode
+from collections import defaultdict
 
 class Preprocess(object):
     def __init__(self, thresh=1.0):
@@ -27,7 +28,7 @@ class Preprocess(object):
         # compute the overall counts
         total_count = 0.0
         for (word, count) in word_count.iteritems():
-            if (count >= self.thresh) and (word not in string.puncutaton):
+            if (count >= self.thresh) and (word not in string.punctuation):
                 self.word_freq[word] = count
                 total_count += count
         # Second pass, normalize the probability
@@ -52,12 +53,15 @@ class Preprocess(object):
         :param fname_code: huffman code file name
         """
         # Word frequency
+        print "Get word frequency ..."
         self.getwordfreq(fname_in)
         # Coding and save code
+        print "Huffman coding ..."
         coder = HuffmanCode()
         codebook = coder.coding(self.word_freq)
         coder.save(fname_code)
         # Call __clean
+        print "Clean file ..."
         self.__clean(fname_in, fname_out, codebook)
         
     def cleanwithvocab(self, fname_in, fname_out, fname_code):
@@ -89,7 +93,7 @@ class Preprocess(object):
             words = line.strip().split()
             ids = []
             for word in words:
-                if (word not in string.puncutation):
+                if (word not in string.punctuation):
                     try:
                         wc = codebook[word]
                         ids.append(wc.index)
@@ -105,3 +109,15 @@ class Preprocess(object):
         fin.close()
         fout.close()
         print "DONE"
+
+
+def main():
+    pp = Preprocess(thresh=1.0)
+    fname_in = "../Debtates/debtates-sent.txt"
+    fname_out = "../Debtates/debtates-wordindex.txt"
+    fname_code = "../Debtates/codebook.txt"
+    pp.clean(fname_in, fname_out, fname_code)
+
+
+if __name__ == '__main__':
+    main()

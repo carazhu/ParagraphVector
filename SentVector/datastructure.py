@@ -1,10 +1,24 @@
 ## datastructure.py
 ## Author: Yangfeng Ji
 ## Date: 08-13-2014
-## Time-stamp: <yangfeng 08/13/2014 12:33:11>
+## Time-stamp: <yangfeng 08/13/2014 22:16:22>
 
 class WordCode(object):
     def __init__(self, index, word, code, freq):
+        """ Data structure for collecting Huffman code for word
+
+        :type index: int
+        :param index: index of word
+
+        :type word: string
+        :param word: word itself
+
+        :type code: string
+        :param code: binary code string for word
+
+        :freq code: float
+        :param code: word frequency in data
+        """
         self.word = word
         self.index = index
         self.code = code

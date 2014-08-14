@@ -1,7 +1,7 @@
 ## sentvector.py
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
-## Time-stamp: <yangfeng 08/13/2014 18:04:14>
+## Time-stamp: <yangfeng 08/13/2014 20:56:15>
 
 import theano
 import theano.tensor as T
@@ -94,7 +94,8 @@ class SentVector(object):
     def save_model(self, fname):
         """ Save the shared variables into files
 
-        :param fname: output file name
+        :type fname: string
+        :param fname: file name
         """
         pass
 
