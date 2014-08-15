@@ -1,7 +1,7 @@
 ## learning.py
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
-## Time-stamp: <yangfeng 08/14/2014 18:48:17>
+## Time-stamp: <yangfeng 08/14/2014 18:57:17>
 
 import theano
 import theano.tensor as T
@@ -26,7 +26,7 @@ class SGDLearn(object):
         self.trndata = trndata
         self.learning_rate = learning_rate
         ind = T.iscalar()
-        cost = self.model.negative_log_likelihood(self.trndata[ind])
+        cost = self.model.negative_log_likelihood(ind)
         # Gradient
         gparams = []
         for param in self.model.params:

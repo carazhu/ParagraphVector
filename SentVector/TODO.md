@@ -1,3 +1,4 @@
 TODO List
 
-- Code for generating example of every word
+- Whether we should merge "Word" and "Feat"?
+- Code for computing gradient
