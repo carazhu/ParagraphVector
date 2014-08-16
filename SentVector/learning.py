@@ -1,10 +1,8 @@
 ## learning.py
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
-## Time-stamp: <yangfeng 08/14/2014 18:57:17>
+## Time-stamp: <yangfeng 08/15/2014 23:15:25>
 
-import theano
-import theano.tensor as T
 import numpy
 from datastructure import WordCode, Instance
 from sentvector import SentVector
@@ -25,25 +23,18 @@ class SGDLearn(object):
         self.model = model
         self.trndata = trndata
         self.learning_rate = learning_rate
-        ind = T.iscalar()
-        cost = self.model.negative_log_likelihood(ind)
-        # Gradient
-        gparams = []
-        for param in self.model.params:
-            gparam = T.grad(cost, param)
-            gparams.append(gparam)
-        # Update rules
-        updates = []
-        for (param, gparam) in zip(self.model.params, gparams):
-            updates.append((param, param - self.learning_rate * gparam))
-        self.train_function = theano.function(inputs = [index],
-                                                outputs = cost,
-                                                updates = updates,
-                                                givens = {ind:index})
-
 
     def sgd_one_word(self, index):
-        self.train_function(index)
+        """ Update parameters with one training sample
+
+        :type index: int
+        :param index: index of training sample
+        """
+        param_grads = self.model.gradient(self.trndata[index])
+        print "Before update:", self.model.hierarchical_softmax(self.trndata[index])
+        self.model.grad_update(param_grads, self.learning_rate)
+        print "After update:", self.model.hierarchical_softmax(self.trndata[index])
+            
         
     def sgd_per_word(self):
         """ Read one word, using SGD to update related parameters
