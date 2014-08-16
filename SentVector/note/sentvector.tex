@@ -1,7 +1,7 @@
 % Work report
 % Date: 2011-11-23
 % Author: Yangfeng Ji @ Gatech
-% Time-stamp: <yangfeng 08/15/2014 18:37:45>
+% Time-stamp: <yangfeng 08/15/2014 23:46:07>
 
 \documentclass[12pt]{article}
 
@@ -77,35 +77,40 @@ Negative Log-likelihood:
 \begin{eqnarray}
   NLL &=& -\log P(w_n|s,w_{n,c})\\
   &=&-\sum_{i}\log P(d_i|q_i,s,w_{n,c})\\
-  &=& -\sum_{i}\log\sigmoid{\trans{\hat{r}_{n,c}}\ww q_i + \trans{s}\ws q_i + b_i}
+  % &=& -\sum_{i}\log\sigmoid{\trans{\hat{r}_{n,c}}\ww q_i + \trans{s}\ws q_i + b_i}
+\end{eqnarray}
+where 
+\begin{eqnarray}
+  P(d_i=1|q_i,s,w_{n,c}) &=& \sigmoid{\trans{\hat{r}_{n,c}}\ww q_i + \trans{s}\ws q_i + b_i}\\
+  P(d_i=0|q_i,s,w_{n,c}) &=& 1-\sigmoid{\trans{\hat{r}_{n,c}}\ww q_i + \trans{s}\ws q_i + b_i}
 \end{eqnarray}
 
-Given that $\frac{\partial\log\sigmoid{x}}{\partial x}=1-\sigmoid{x}$, we have 
+Given that $\frac{\partial\log\sigmoid{x}}{\partial x}=1-\sigmoid{x}$ and $\frac{\partial\log(1-\sigmoid{x})}{\partial x}=-\sigmoid{x}$, we have 
 \begin{equation}
-  \frac{\partial NLL}{\partial q_i}=-\Big(1-\sigmoid{\trans{\hat{r}_{n,c}}\ww q_i + \trans{s}\ws q_i + b_i}\Big)
+  \frac{\partial NLL}{\partial q_i}=-\partial\log P(d_i|q_i,s,w_{n,c})
   \left(
     \trans{\ww}\hat{r}_{n,c} + \trans{\ws}s
   \right)
 \end{equation}
 
 \begin{equation}
-  \frac{\partial NLL}{\partial b_i}=-\Big(1-\sigmoid{\trans{\hat{r}_{n,c}}\ww q_i + \trans{s}\ws q_i + b_i}\Big)
+  \frac{\partial NLL}{\partial b_i}=-\partial\log P(d_i|q_i,s,w_{n,c})
 \end{equation}
 
 \begin{equation}
-  \frac{\partial NLL}{\partial s}=-\sum_i\Big(1-\sigmoid{\trans{\hat{r}_{n,c}}\ww q_i + \trans{s}\ws q_i + b_i}\Big)\ws q_i
+  \frac{\partial NLL}{\partial s}=-\sum_i\partial\log P(d_i|q_i,s,w_{n,c})\ws q_i
 \end{equation}
 
 \begin{equation}
-  \frac{\partial NLL}{\partial \ww}= -\sum_i\Big(1-\sigmoid{\trans{\hat{r}_{n,c}}\ww q_i + \trans{s}\ws q_i + b_i}\Big) \hat{r}_{n,c}\trans{q}_i
+  \frac{\partial NLL}{\partial \ww}= -\sum_i\partial\log P(d_i|q_i,s,w_{n,c}) \hat{r}_{n,c}\trans{q}_i
 \end{equation}
 
 \begin{equation}
-  \frac{\partial NLL}{\partial \ws}= -\sum_i\Big(1-\sigmoid{\trans{\hat{r}_{n,c}}\ww q_i + \trans{s}\ws q_i + b_i}\Big) s\trans{q}_i
+  \frac{\partial NLL}{\partial \ws}= -\sum_i\partial\log P(d_i|q_i,s,w_{n,c}) s\trans{q}_i
 \end{equation}
 
 \begin{equation}
-  \frac{\partial NLL}{\partial w_j}= -\sum_i\Big(1-\sigmoid{\trans{\hat{r}_{n,c}}\ww q_i + \trans{s}\ws q_i + b_i}\Big) \frac{1}{2c}\ww q_i
+  \frac{\partial NLL}{\partial w_j}= -\sum_i \partial\log P(d_i|q_i,s,w_{n,c}) \frac{1}{2c}\ww q_i
 \end{equation}
 
 % ---------------------------------------------------

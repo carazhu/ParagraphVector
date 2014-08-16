@@ -1,4 +1,3 @@
 TODO List
 
-- Whether we should merge "Word" and "Feat"?
-- Code for computing gradient
+- Check the gradient update, because the update could descrease the prob, which does not make too much sense.

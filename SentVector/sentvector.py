@@ -1,7 +1,7 @@
 ## sentvector.py
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
-## Time-stamp: <yangfeng 08/15/2014 23:14:58>
+## Time-stamp: <yangfeng 08/16/2014 00:08:51>
 
 import numpy
 from huffman import *
@@ -17,7 +17,11 @@ class FeatInfo(object):
         self.logprob = logprob
 
 def sigmoid(x):
-    return 1 / (1 + numpy.exp(x))
+    """ Sigmoid function
+
+    Never forget the minus sign again - YJ
+    """
+    return 1 / (1 + numpy.exp(-x))
 
 def get_code_label(code):
     n_code = len(code)
@@ -128,21 +132,29 @@ class SentVector(object):
 
     def gradient(self, sample):
         """ Compute the gradient wrt given training example
+
+        Separate gradient calculating and updating, so we can parallel
+          computing in multiple threads
+
+        :type sample: Instance class (see datastructure.py for more detail)
+        :param sample: one training sample instance
         """
         word_idx, sent_idx = sample.windex, sample.sindex
         cont_list, code = sample.clist, sample.code
         featpath_dct, rhat, sent_vec = self.__log_prob_path(word_idx, sent_idx,
                                                             cont_list, code)
         # Gradient of sigmoid function (depends on label)
+        # NEED DOUBLE CHECK
         sigmoid_grad = {}
         for (subcode, val) in featpath_dct.iteritems():
             if val.label == '1':
                 sigmoid_grad[subcode] = 1 - numpy.exp(val.logprob)
             elif val.label == '0':
-                sigmoid_grad[subcode] = - numpy.exp(val.logprob)
+                sigmoid_grad[subcode] = numpy.exp(val.logprob) - 1
             else:
                 raise ValueError("Unrecognized label in gradient function")
-        # All other components
+        # All other components for computing gradient
+        # Refer to note for more detail
         Uqi, Vqi, Utr, Vts, rqt, sqt = {}, {}, {}, {}, {}, {}
         for (subcode, val) in featpath_dct.iteritems():
             Uqi[subcode] = self.U.dot(val.vec)
