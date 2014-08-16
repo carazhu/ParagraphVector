@@ -1,7 +1,7 @@
 ## sentvector.py
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
-## Time-stamp: <yangfeng 08/16/2014 00:08:51>
+## Time-stamp: <yangfeng 08/16/2014 00:32:39>
 
 import numpy
 from huffman import *
@@ -100,6 +100,9 @@ class SentVector(object):
         """
         nWords = self.nWords
         nCode = len(code)
+        # Check the length of context list
+        if len(cont_list) == 0:
+            return None, None, None
         # Average context words and sentence vector
         r_hat = numpy.zeros((self.n_dim,))
         for idx in cont_list:
@@ -143,6 +146,8 @@ class SentVector(object):
         cont_list, code = sample.clist, sample.code
         featpath_dct, rhat, sent_vec = self.__log_prob_path(word_idx, sent_idx,
                                                             cont_list, code)
+        if featpath_dct is None:
+            return None
         # Gradient of sigmoid function (depends on label)
         # NEED DOUBLE CHECK
         sigmoid_grad = {}
