@@ -1,7 +1,7 @@
 ## main.py
 ## Author: Yangfeng Ji
 ## Date: 08-13-2014
-## Time-stamp: <yangfeng 08/16/2014 00:21:11>
+## Time-stamp: <yangfeng 08/16/2014 22:13:02>
 
 from sentvector import SentVector
 from cPickle import load
@@ -10,10 +10,8 @@ from learning import SGDLearn
 import gzip
 
 def main():
-    n_word = 3731
-    n_sent = 24414
-    n_feat = 2**16
-    n_dim = 100
+    n_word, n_sent = 3731, 24415
+    n_feat, n_dim = 2**16, 50
     print 'Load data ...'
     trndata = load(gzip.open("../Debtates/data-sample.pickle.gz"))
     print 'Create a SentVector model ...'
@@ -23,7 +21,8 @@ def main():
     # print 'Update parameters with one instance ...'
     # learner.sgd_one_word(1)
     print 'Update parameters with entire dataset (one pass) ...'
-    learner.sgd_per_word()
+    learner.sgd_perword()
+    # learner.sgd_minibatch()
 
 
 if __name__ == '__main__':

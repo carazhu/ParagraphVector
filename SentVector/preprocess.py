@@ -1,7 +1,7 @@
 ## preprocess.py
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
-## Time-stamp: <yangfeng 08/14/2014 12:18:57>
+## Time-stamp: <yangfeng 08/16/2014 22:05:37>
 
 import string
 from huffman import HuffmanCode
@@ -76,6 +76,7 @@ class Preprocess(object):
         coder = HuffmanCode()
         codebook = coder.coding(self.word_freq)
         coder.save(fname_code)
+        print "Max code length = {}".format(coder.max_length)
         # Call __clean
         print "Clean file ..."
         self.__clean(fname_in, fname_out, codebook)

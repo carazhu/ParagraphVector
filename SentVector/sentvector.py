@@ -1,7 +1,7 @@
 ## sentvector.py
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
-## Time-stamp: <yangfeng 08/16/2014 00:32:39>
+## Time-stamp: <yangfeng 08/16/2014 19:25:37>
 
 import numpy
 from huffman import *

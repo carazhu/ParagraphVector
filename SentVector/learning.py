@@ -1,12 +1,14 @@
 ## learning.py
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
-## Time-stamp: <yangfeng 08/16/2014 00:33:14>
+## Time-stamp: <yangfeng 08/16/2014 21:55:50>
 
-import numpy
+import numpy, time
+import pp
 from datastructure import WordCode, Instance
 from sentvector import SentVector
 from random import shuffle
+
 
 class SGDLearn(object):
     def __init__(self, model, trndata, learning_rate=1e-4):
@@ -25,7 +27,7 @@ class SGDLearn(object):
         self.trndata = trndata
         self.learning_rate = learning_rate
 
-    def sgd_one_word(self, index):
+    def sgd_oneword(self, index):
         """ Update parameters with one training sample
 
         :type index: int
@@ -37,7 +39,7 @@ class SGDLearn(object):
         print "After update:", self.model.hierarchical_softmax(self.trndata[index])
             
         
-    def sgd_per_word(self):
+    def sgd_perword(self):
         """ Read one word, using SGD to update related parameters
         """
         Index = range(len(self.trndata))
@@ -54,7 +56,20 @@ class SGDLearn(object):
                 print "After update:", self.model.hierarchical_softmax(self.trndata[index])
 
             
-    def sgd_minibatch(self, anything_here):
+    def sgd_minibatch(self):
+        """ Update parameters with one batch of training examples
+
+        :type batch_size: int
+        :type batch_size: size of one mini-batch
         """
-        """
-        pass
+        ppservers = ()
+        ncpus = 2
+        job_server = pp.Server(ncpus, ppservers=ppservers)
+        print "Starting parallel computing with {} workers".format(job_server.get_ncpus())
+        inputs = range(ncpus)
+        start_time = time.time()
+        jobs = [(input, job_server.submit(self.model.gradient, (self.trndata[input],), (), ())) for input in inputs]
+        for input, job in jobs:
+            print "Sum of primes below", input, "is", job()
+        print "Time elapsed: {} s".format(time.time() - start_time)
+        job_server.print_stats()
