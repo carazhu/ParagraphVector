@@ -1,7 +1,7 @@
 ## sentvector.py
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
-## Time-stamp: <yangfeng 08/17/2014 16:19:14>
+## Time-stamp: <yangfeng 08/17/2014 18:39:28>
 
 import numpy, gzip
 from huffman import *
@@ -170,6 +170,7 @@ class SentVector(object):
             rqt[subcode] = rhat.dot(val.vec.T)
             sqt[subcode] = sent_vec.dot(val.vec.T)
         # Initial gradient
+        # This is convenient, but not memory-efficient - YJ
         Word_grad = numpy.zeros(self.Word.shape)
         Sent_grad = numpy.zeros(self.Sent.shape)
         Feat_grad = numpy.zeros(self.Feat.shape)

@@ -1,7 +1,7 @@
 ## learning.py
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
-## Time-stamp: <yangfeng 08/17/2014 18:12:24>
+## Time-stamp: <yangfeng 08/17/2014 18:16:51>
 
 import numpy, time
 import pp
@@ -78,7 +78,7 @@ class SGDLearn(object):
                 self.model.grad_update(param_grads, self.learning_rate)
             if (n+1) % info_interval == 0:
                 print "After update:", self.model.hierarchical_softmax(self.trndata[index])
-        self.model.save_model("test-saved-model.pickle.gz")
+        self.model.save_model("model.pickle.gz")
 
             
     def sgd_minibatch(self):

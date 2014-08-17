@@ -1,7 +1,7 @@
 ## main.py
 ## Author: Yangfeng Ji
 ## Date: 08-13-2014
-## Time-stamp: <yangfeng 08/17/2014 18:13:35>
+## Time-stamp: <yangfeng 08/17/2014 18:18:58>
 
 from sentvector import SentVector
 from cPickle import load
@@ -10,8 +10,8 @@ from learning import SGDLearn
 import gzip
 
 def main():
-    n_word, n_sent = 10918, 22431
-    n_feat, n_dim = 2**19, 50
+    n_word, n_sent = 5158, 22431
+    n_feat, n_dim = 2**17, 50
     print 'Load data ...'
     trndata = load(gzip.open("../Debtates/data-sample.pickle.gz"))
     print 'Create a SentVector model ...'

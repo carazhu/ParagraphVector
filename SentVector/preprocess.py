@@ -1,7 +1,7 @@
 ## preprocess.py
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
-## Time-stamp: <yangfeng 08/17/2014 17:46:36>
+## Time-stamp: <yangfeng 08/17/2014 18:17:54>
 
 import string
 from huffman import HuffmanCode
@@ -128,7 +128,7 @@ class Preprocess(object):
 
 
 def main():
-    pp = Preprocess(thresh=1.0)
+    pp = Preprocess(thresh=3.0)
     fname_in = "../Debtates/debtates-sent.txt"
     fname_out = "../Debtates/debtates-word-index.txt"
     fname_code = "../Debtates/codebook.txt"
