@@ -1,7 +1,7 @@
 ## gensample.py
 ## Author: Yangfeng Ji
 ## Date: 08-14-2014
-## Time-stamp: <yangfeng 08/16/2014 22:11:01>
+## Time-stamp: <yangfeng 08/17/2014 17:59:18>
 
 """
 Generate sample from word-index file,
@@ -30,9 +30,9 @@ class GenSample(object):
             items = line.strip().split("\t")
             try:
                 sent_idx = int(items[0])
-                words_idx = map(int, items[1].split())
+                words_ids = map(int, items[1].split())
                 sent_samples = self.__genonesent(sent_idx,
-                                                 words_idx)
+                                                 words_ids)
                 self.samples += sent_samples
             except IndexError:
                 print line
@@ -41,19 +41,29 @@ class GenSample(object):
         fout = gzip.open(fname_sample, 'w')
         dump(self.samples, fout)
 
-    def __genonesent(self, sent_idx, words_idx):
+    def __genonesent(self, sent_idx, words_ids):
+        """ Generate sample from one sentence
+
+        :type sent_idx: int
+        :param sent_idx: sentence index
+
+        :type words_ids: list of int
+        :param words_ids: a list of word indices in sentence
+                          sent_idx
+        """
         sent_samples = []
-        for (idx, word) in enumerate(words_idx):
+        for (idx, w_idx) in enumerate(words_ids):
             context_list = []
-            code = self.codebook[idx].code
+            code = self.codebook[w_idx].code
             for inc in range(1, self.n_context+1):
                 if (idx-inc) >= 0:
-                    context_list.append(words_idx[idx-inc])
+                    context_list.append(words_ids[idx-inc])
             for inc in range(1, self.n_context+1):
-                if (idx+inc) < len(words_idx):
-                    context_list.append(words_idx[idx-inc])
-            instance = Instance(idx, sent_idx, context_list,
+                if (idx+inc) < len(words_ids):
+                    context_list.append(words_ids[idx+inc])
+            instance = Instance(w_idx, sent_idx, context_list,
                                 code)
+            # print w_idx, sent_idx, code, context_list
             sent_samples.append(instance)
         return sent_samples
 
@@ -62,7 +72,7 @@ def main():
     fname_code = "../Debtates/codebook.txt"
     fname_in = "../Debtates/debtates-word-index.txt"
     fname_sample = "../Debtates/data-sample.pickle.gz"
-    gs = GenSample(fname_code, n_context=2)
+    gs = GenSample(fname_code, n_context=3)
     gs.generate(fname_in, fname_sample)
 
 

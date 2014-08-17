@@ -1,11 +1,12 @@
 ## sentvector.py
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
-## Time-stamp: <yangfeng 08/16/2014 19:25:37>
+## Time-stamp: <yangfeng 08/17/2014 16:19:14>
 
-import numpy
+import numpy, gzip
 from huffman import *
 from datastructure import WordCode, Instance
+from cPickle import load, dump
 
 rng = numpy.random.RandomState(1234)
 
@@ -216,10 +217,38 @@ class SentVector(object):
         :type fname: string
         :param fname: file name
         """
-        pass
+        data = {"Word":self.Word,
+                "Sent":self.Sent,
+                "Feat":self.Feat,
+                "U":self.U,
+                "V":self.V,
+                "b":self.b}
+        if ".gz" not in fname:
+            fname += ".gz"
+        print 'Save model into: {} ...'.format(fname)
+        fout = gzip.open(fname, "w")
+        dump(data, fout)
 
     def load_model(self, fname):
+        """ Load model parameters from data file fname
+
+        :type fname: string
+        :param fname: file name
         """
+        fin = gzip.open(fname, "r")
+        print "Load model from: {} ...".format(fname)
+        data = load(fin)
+        self.Word, self.Sent = data["Word"], data["Sent"]
+        self.U, self.V = data["U"], data["V"]
+        self.Feat, self.b = data["Feat"], data["b"]
+
+    def predict(self, sample):
+        """ Prediction on a given sample
+
+        :type sample: Instance
+        :param sample: an instance of Instance class
         """
         pass
+        
+
 
