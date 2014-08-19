@@ -1,7 +1,7 @@
 ## datastructure.py
 ## Author: Yangfeng Ji
 ## Date: 08-13-2014
-## Time-stamp: <yangfeng 08/13/2014 22:16:22>
+## Time-stamp: <yangfeng 08/18/2014 15:10:30>
 
 class WordCode(object):
     def __init__(self, index, word, code, freq):
@@ -45,3 +45,30 @@ class Instance(object):
         self.sindex = sindex
         self.clist = clist
         self.code = code
+
+
+class FeatInfo(object):
+    def __init__(self, vec, code_idx, label, logprob):
+        """ Information about one feature vector related
+            to a given word
+
+        :type vec: numpy.array
+        :param vec: value of feature vector
+
+        :type code_idx: int
+        :param code_idx: transform binary code into an int number indicating
+                         the position of this feature vector in the feature
+                         matrix
+
+        :type label: string with length 1
+        :param label: the label of the given word, distinguishing the path
+                      on the Huffman tree
+
+        :type logprob: float
+        :param logprob: the logprob of this feature vector given the word
+                        and its context
+        """
+        self.vec = vec
+        self.code_idx = code_idx
+        self.label = label
+        self.logprob = logprob

@@ -1,21 +1,21 @@
 ## sentvector.py
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
-## Time-stamp: <yangfeng 08/17/2014 18:39:28>
+## Time-stamp: <yangfeng 08/18/2014 15:11:19>
 
 import numpy, gzip
 from huffman import *
-from datastructure import WordCode, Instance
+from datastructure import WordCode, Instance, FeatInfo
 from cPickle import load, dump
 
 rng = numpy.random.RandomState(1234)
 
-class FeatInfo(object):
-    def __init__(self, vec, code_idx, label, logprob):
-        self.vec = vec
-        self.code_idx = code_idx
-        self.label = label
-        self.logprob = logprob
+# class FeatInfo(object):
+#     def __init__(self, vec, code_idx, label, logprob):
+#         self.vec = vec
+#         self.code_idx = code_idx
+#         self.label = label
+#         self.logprob = logprob
 
 def sigmoid(x):
     """ Sigmoid function

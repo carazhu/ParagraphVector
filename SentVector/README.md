@@ -2,11 +2,11 @@
 
 ##Code Structure##
 
-- Preprocess class: which could 1) creates the dataset --- each row is one sentence 2) replace the low-frequency words with a special tag 3) then, replace each word and sentence their indices 4) build the haffman tree with word frequency 5) save the word-index and haffman code into file for future purpose
+- Preprocess class: which could 1) creates the dataset --- each row is one sentence 2) remove all low-frequency words 3) then, replace each word and sentence their indices 4) build the haffman tree with word frequency 5) save the word-index and haffman code into file for future purpose
 - HuffmanCode class: which builds a Huffman tree according to word frequencies
 - GenSample class: which generates all training example, one example per word
 - ParaVector class: includes every thing we need from the paragraph vector model 1) Initlization 2) Hiarchical Softmax 3) Negative Loglikelihood 4) Save model (mainly the shared variables) 5) Load model
-- Learning class: includes 1) One word SGD --- read one word and update related parameters 2) Per-word SGD --- one pass updating with all training examples (words)
+- Learning class: includes 1) One word SGD --- read one word and update related parameters 2) Per-word SGD --- one pass updating with all training examples (words) 3) Mini-batch SGD 4) AdaGrad update
 - Main function: create an instance of ParaVector class, then run the model 
 
 ## Hyper-parameter ##
@@ -15,6 +15,7 @@
 - Initial learning rate (default: 1e-4)
 - With or without AdaGrad updating
 - Size of latent dimension
+- Size of context windows (default: 3)
 - Number of updating pass (default: 30)
 
 ## Reference ##
