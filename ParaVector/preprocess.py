@@ -2,11 +2,14 @@
 ## Author: Yangfeng Ji
 ## Date: 08-10-2014
 ## Time-stamp: <yangfeng 08/18/2014 14:42:16>
+## midify by Cara Zhu 20150521
 
 import string
 from huffman import HuffmanCode
 from datastructure import WordCode
 from collections import defaultdict
+import jieba
+import sys
 
 EXCLUDE = set(string.punctuation)
 
@@ -35,7 +38,8 @@ class Preprocess(object):
         word_count = defaultdict(int)
         fin = open(fname, "r")
         for line in fin:
-            words = line.strip().split()
+            #words = line.strip().split()
+            words = jieba.cut(line.strip(),True)
             for word in words:
                 word = wordprocess(word)
                 if word is not None:
@@ -108,7 +112,8 @@ class Preprocess(object):
         fout = open(fname_out, "w")
         sent_counter = 0
         for line in fin:
-            words = line.strip().split()
+            #words = line.strip().split()
+            words = jieba.cut(line.strip(),True)
             ids = []
             for word in words:
                 try:
@@ -129,6 +134,8 @@ class Preprocess(object):
 
 
 def main():
+    reload(sys)                         # 2
+    sys.setdefaultencoding('utf-8')     # 3
     pp = Preprocess(thresh=3.0)
     fname_in = "../Debtates/debtates-sent.txt"
     fname_out = "../Debtates/debtates-word-index.txt"
